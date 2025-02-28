@@ -43,6 +43,7 @@ export default function BasicLayout({children}: Props) {
         try {
 
             await userLogoutPost();
+
             message.success("已退出登录");
             dispatch(setLoginUser(DEFAULT_USER));
             router.push("/user/login");
@@ -50,117 +51,118 @@ export default function BasicLayout({children}: Props) {
             message.error("操作失败，", e?.message);
         }
     };
-    if (pathname === '/user/login' || pathname === '/user/register') {
-        return (
-            <div
-                id="basicLayout"
-                style={{
-                    height: "100vh",
-                    overflow: "auto",
+
+    return (
+        <div
+            id="basicLayout"
+            style={{
+                height: "100vh",
+                overflow: "auto",
+            }}
+        >
+
+            <ProLayout
+                title="rg智能平台"
+                layout="top"
+                logo={
+                    <Image
+                        src="/assets/logo.svg"
+                        height={32}
+                        width={32}
+                        alt="rg智能平台 - czr"
+                    />
+                }
+                location={{
+                    pathname,
                 }}
-            >
-                <ProLayout
-                    title="rg智能平台"
-                    layout="top"
-                    logo={
-                        <Image
-                            src="/assets/logo.svg"
-                            height={32}
-                            width={32}
-                            alt="rg智能平台 - czr"
-                        />
-                    }
-                    location={{
-                        pathname,
-                    }}
-                    avatarProps={{
-                        src: loginUser?.userAvatar || "/assets/logo.svg",
-                        size: "small",
-                        title: loginUser?.userName || "rg智能平台",
-                        render: (props, dom) => {
-                            if (!loginUser?.id) {
-                                return (
-                                    <div
-                                        onClick={() => {
-                                            router.push("/user/login");
-                                        }}
-                                    >
-                                        {dom}
-                                    </div>
-                                );
-                            }
+                avatarProps={{
+                    src: loginUser?.userAvatar || "/assets/logo.svg",
+                    size: "small",
+                    title: loginUser?.userName || "rg智能平台",
+                    render: (props, dom) => {
+                        if (!loginUser?.id) {
                             return (
-                                <Dropdown
-                                    menu={{
-                                        items: [
-                                            {
-                                                key: "userCenter",
-                                                icon: <UserOutlined/>,
-                                                label: "个人中心",
-                                            },
-                                            {
-                                                key: "logout",
-                                                icon: <LogoutOutlined/>,
-                                                label: "退出登录",
-                                            },
-                                        ],
-                                        onClick: async (event: { key: React.Key }) => {
-                                            const {key} = event;
-                                            if (key === "logout") {
-                                                console.log("退出")
-                                                await userLogout();
-                                            } else if (key === "userCenter") {
-                                                router.push("/user/center");
-                                            }
-                                        },
+                                <div
+                                    onClick={() => {
+                                        router.push("/user/login");
                                     }}
                                 >
                                     {dom}
-                                </Dropdown>
+                                </div>
                             );
-                        },
-                    }}
-                    actionsRender={(props) => {
-                        if (props.isMobile) return [];
-                        return [
-                            // <SearchInput key="search" />,
-                            <a
-                                key="github"
-                                href="https://github.com/liyupi/mianshiya-next"
-                                target="_blank"
-                            >
-                                <GithubFilled key="GithubFilled"/>
-                            </a>,
-                        ];
-                    }}
-
-                    headerTitleRender={(logo, title, _) => {
+                        }
                         return (
-                            <a>
-                                {logo}
-                                {title}
-                            </a>
+                            <Dropdown
+                                menu={{
+                                    items: [
+                                        {
+                                            key: "userCenter",
+                                            icon: <UserOutlined/>,
+                                            label: "个人中心",
+                                        },
+                                        {
+                                            key: "logout",
+                                            icon: <LogoutOutlined/>,
+                                            label: "退出登录",
+                                        },
+                                    ],
+                                    onClick: async (event: { key: React.Key }) => {
+                                        const {key} = event;
+                                        if (key === "logout") {
+                                            console.log("退出")
+                                            await userLogout();
+                                        } else if (key === "userCenter") {
+                                            router.push("/user/center");
+                                        }
+                                    },
+                                }}
+                            >
+                                {dom}
+                            </Dropdown>
                         );
-                    }}
-                    // 渲染底部栏
-                    footerRender={() => {
-                        return <GlobalFooter/>;
-                    }}
-                    onMenuHeaderClick={(e) => console.log(e)}
-                    // 定义有哪些菜单
-                    menuDataRender={() => {
-                        return getAccessibleMenus(loginUser, menus);
-                    }}
-                    // 定义了菜单项如何渲染
-                    menuItemRender={(item, dom) => (
-                        <Link href={item.path || "/"} target={item.target}>
-                            {dom}
-                        </Link>
-                    )}
-                >
-                    {children}
-                </ProLayout>
-            </div>
-        );
-    }
+                    },
+                }}
+                actionsRender={(props) => {
+                    if (props.isMobile) return [];
+                    return [
+                        // <SearchInput key="search" />,
+                        <a
+                            key="github"
+                            href="https://github.com/chenrgSix/rgbi_backend"
+                            target="_blank"
+                        >
+                            <GithubFilled key="GithubFilled"/>
+                        </a>,
+                    ];
+                }}
+
+                headerTitleRender={(logo, title, _) => {
+                    return (
+                        <a>
+                            {logo}
+                            {title}
+                        </a>
+                    );
+                }}
+                // 渲染底部栏
+                footerRender={() => {
+                    return <GlobalFooter/>;
+                }}
+                onMenuHeaderClick={(e) => console.log(e)}
+                // 定义有哪些菜单
+                menuDataRender={() => {
+                    return getAccessibleMenus(loginUser, menus);
+                }}
+                // 定义了菜单项如何渲染
+                menuItemRender={(item, dom) => (
+                    <Link href={item.path || "/"} target={item.target}>
+                        {dom}
+                    </Link>
+                )}
+            >
+                {children}
+            </ProLayout>
+        </div>
+    );
+
 }

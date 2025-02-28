@@ -5,7 +5,8 @@ import { RootState } from "@/stores";
 import {findAllMenuItemByPath} from "@/config/menu";
 import ACCESS_ENUM from "@/access/accessEnum";
 import checkAccess from "@/access/checkAccess";
-import Forbidden from "@/components/Forbidden";
+import Forbidden from "next/dist/client/components/forbidden-error";
+
 
 
 /**
