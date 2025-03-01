@@ -5,7 +5,7 @@ import { RootState } from "@/stores";
 import {findAllMenuItemByPath} from "@/config/menu";
 import ACCESS_ENUM from "@/access/accessEnum";
 import checkAccess from "@/access/checkAccess";
-import Forbidden from "next/dist/client/components/forbidden-error";
+import Forbidden from "@/app/forbidden";
 
 
 
@@ -26,7 +26,8 @@ const AccessLayout: React.FC<
     const menu = findAllMenuItemByPath(pathname);
     const needAccess = menu?.access ?? ACCESS_ENUM.NOT_LOGIN;
     // 校验权限
-    const canAccess = checkAccess(loginUser, needAccess);
+    // 确保 loginUser 符合 LoginUserVO 类型再传入 checkAccess 函数
+    const canAccess = checkAccess(loginUser as any, needAccess);
     if (!canAccess) {
         return <Forbidden />;
     }

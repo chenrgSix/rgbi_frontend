@@ -1,17 +1,30 @@
 import { MenuDataItem } from "@ant-design/pro-layout";
+import ACCESS_ENUM from "@/access/accessEnum";
 
 
 // 菜单列表
 export const menus = [
-    // {
-    //     path: "/user/login",
-    //     name: "登录页",
-    // },
+
     {
         path: "/",
         name: "主页",
+        access: ACCESS_ENUM.USER
     },
-
+    {
+        path: "/chart/gen",
+        name: "智能分析",
+        access: ACCESS_ENUM.USER
+    },
+    {
+        path: "/chart/my",
+        name: "我的图表",
+        access: ACCESS_ENUM.USER
+    },
+    {
+        path: "/user/manage",
+        name: "个人信息",
+        access: ACCESS_ENUM.USER
+    },
 ] as MenuDataItem[];
 
 // 根据全部路径查找菜单

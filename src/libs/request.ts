@@ -1,4 +1,5 @@
 import axios from "axios";
+import {message} from "antd";
 
 // 创建 Axios 实例
 // 区分开发和生产环境
@@ -39,7 +40,8 @@ myAxios.interceptors.response.use(
             }
         } else if (data.code !== 0) {
             // 其他错误
-            throw new Error(data.message ?? "服务器错误");
+            message.error(data.message ?? "服务器错误");
+            // throw new Error(data.message ?? "服务器错误");
         }
         return data;
     },
