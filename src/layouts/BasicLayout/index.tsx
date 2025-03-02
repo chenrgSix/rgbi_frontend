@@ -6,7 +6,7 @@ import React from "react";
 import Image from "next/image";
 import {usePathname, useRouter} from "next/navigation";
 import Link from "next/link";
-import GlobalFooter from "@/components/GlobalFooter";
+// import GlobalFooter from "@/components/GlobalFooter";
 
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@/stores";
@@ -17,7 +17,8 @@ import {DEFAULT_USER} from "@/constants/user";
 
 import "./index.css";
 import {menus} from "@/config/menu";
-import {userLogoutPost} from "@/api/userController";
+import {userLogoutNow} from "@/api/userController";
+
 
 
 interface Props {
@@ -42,7 +43,7 @@ export default function BasicLayout({children}: Props) {
     const userLogout = async () => {
         try {
 
-            await userLogoutPost();
+            await userLogoutNow();
 
             message.success("已退出登录");
             dispatch(setLoginUser(DEFAULT_USER));
@@ -145,9 +146,9 @@ export default function BasicLayout({children}: Props) {
                     );
                 }}
                 // 渲染底部栏
-                footerRender={() => {
-                    return <GlobalFooter/>;
-                }}
+                // footerRender={() => {
+                //     return <GlobalFooter/>;
+                // }}
                 onMenuHeaderClick={(e) => console.log(e)}
                 // 定义有哪些菜单
                 menuDataRender={() => {

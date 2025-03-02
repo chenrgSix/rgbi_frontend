@@ -12,9 +12,9 @@ export default function GlobalFooter() {
         <div className="global-footer">
             <div>© {currentYear} rg智能平台</div>
             <div>
-                <a href="#" target="_blank">
-                    作者：czr
-                </a>
+                {/*<a href="#" target="_blank">*/}
+                {/*    作者：czr*/}
+                {/*</a>*/}
             </div>
         </div>
     );

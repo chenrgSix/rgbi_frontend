@@ -21,6 +21,11 @@ export const menus = [
         access: ACCESS_ENUM.USER
     },
     {
+        path: "/ai/chat",
+        name: "聊天",
+        access: ACCESS_ENUM.USER
+    },
+    {
         path: "/user/manage",
         name: "个人信息",
         access: ACCESS_ENUM.USER

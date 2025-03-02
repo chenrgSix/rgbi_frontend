@@ -6,9 +6,11 @@ import * as userController from "./userController";
 import * as scoreController from "./scoreController";
 import * as fileController from "./fileController";
 import * as chartController from "./chartController";
+import * as dialoguesController from "./dialoguesController";
 export default {
   userController,
   scoreController,
   fileController,
   chartController,
+  dialoguesController,
 };

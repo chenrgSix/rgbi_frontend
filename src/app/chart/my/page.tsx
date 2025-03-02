@@ -1,5 +1,4 @@
 'use client'
-import { useModel } from '@@/exports';
 import {Avatar, Button, Card, List, message, Result} from 'antd';
 import ReactECharts from 'echarts-for-react';
 import Search from "antd/es/input/Search";
@@ -13,16 +12,16 @@ import {RootState} from "@/stores";
  * @constructor
  */
 class ErrorBoundary extends Component<{ errorMessage: string }, { hasError: boolean }>  {
-  constructor(props) {
+  constructor(props: { errorMessage: string; children?: React.ReactNode }) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error:any) {
+  static getDerivedStateFromError() {
     return { hasError: true };
   }
 
-  componentDidCatch(error, info) {
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
     // 可以在这里记录错误信息
     console.error('Component error:', error, info);
   }
@@ -38,7 +37,9 @@ class ErrorBoundary extends Component<{ errorMessage: string }, { hasError: bool
       );
     }
 
-    return this.props.children;
+    // 正确处理类型，确保 children 属性存在
+    const { children } = this.props as unknown as { children: React.ReactNode };
+    return children;
   }
 }
 const MyChartPage: React.FC = () => {
@@ -63,7 +64,7 @@ const MyChartPage: React.FC = () => {
       // const res = await listMyChartByPageUsingPost(searchParams);
       const res = await listMyChartByPage(searchParams);
       if (res.data) {
-        setChartList(res.data.records ?? []);
+        setChartList(res.data?.records ?? []);
         setTotal(res.data.total ?? 0);
         // 隐藏图表的 title
         if (res.data.records) {

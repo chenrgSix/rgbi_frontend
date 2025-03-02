@@ -38,7 +38,7 @@ myAxios.interceptors.response.use(
             ) {
                 window.location.href = `/user/login?redirect=${window.location.href}`;
             }
-        } else if (data.code !== 0) {
+        } else if (data.code && data.code !== 0) {
             // 其他错误
             message.error(data.message ?? "服务器错误");
             // throw new Error(data.message ?? "服务器错误");

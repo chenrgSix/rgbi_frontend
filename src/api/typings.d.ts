@@ -17,6 +17,24 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseChatVO = {
+    code?: number;
+    data?: ChatVO;
+    message?: string;
+  };
+
+  type BaseResponseDialoguesVO = {
+    code?: number;
+    data?: DialoguesVO;
+    message?: string;
+  };
+
+  type BaseResponseListDialogueSummaryVO = {
+    code?: number;
+    data?: DialogueSummaryVO[];
+    message?: string;
+  };
+
   type BaseResponseLoginUserVO = {
     code?: number;
     data?: LoginUserVO;
@@ -44,6 +62,12 @@ declare namespace API {
   type BaseResponsePageUserVO = {
     code?: number;
     data?: PageUserVO;
+    message?: string;
+  };
+
+  type BaseResponseScoreVO = {
+    code?: number;
+    data?: ScoreVO;
     message?: string;
   };
 
@@ -129,8 +153,38 @@ declare namespace API {
     userId?: number;
   };
 
+  type chatParams = {
+    memoryId?: number;
+    content: string;
+  };
+
+  type chatStreamParams = {
+    memoryId?: number;
+    content: string;
+  };
+
+  type ChatVO = {
+    id?: number;
+    chatResponse?: string;
+  };
+
   type DeleteRequest = {
     id?: number;
+  };
+
+  type DialogueSummaryVO = {
+    id?: number;
+    chatTitle?: string;
+    createTime?: string;
+  };
+
+  type DialoguesVO = {
+    id?: number;
+    userId?: number;
+    chatContent?: string;
+    chatTitle?: string;
+    createTime?: string;
+    updateTime?: string;
   };
 
   type genChartBuAiAsyncMqParams = {
@@ -150,6 +204,10 @@ declare namespace API {
 
   type getChartByIdParams = {
     id: number;
+  };
+
+  type getDialogueByIdParams = {
+    memoryId: number;
   };
 
   type getUserByIdParams = {
@@ -215,6 +273,15 @@ declare namespace API {
     maxLimit?: number;
     countId?: string;
     pages?: number;
+  };
+
+  type ScoreVO = {
+    scoreTotal?: number;
+    isSign?: number;
+  };
+
+  type SseEmitter = {
+    timeout?: number;
   };
 
   type User = {

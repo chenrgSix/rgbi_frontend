@@ -13,13 +13,12 @@ const UserProfile = () => {
 
   const [userData, setUserData] = useState<API.BaseResponseLoginUserVO>();
 
-  const [score, setScore] = useState<API.BaseResponseLong>();
+  const [score, setScore] = useState();
   const [avatarUrl, setAvatarUrl] = useState<string>();
 
   const fetchData = async () => {
     try {
       const [userRes, scoreRes] = await Promise.all([
-
           getLoginUser(),
           getUserById1()
       ]);
@@ -31,7 +30,11 @@ const UserProfile = () => {
       }
 
       if (scoreRes.data) {
-        setScore(scoreRes);
+        console.log(scoreRes);
+        const {isSign, scoreTotal} = scoreRes.data;
+        console.log(scoreTotal);
+        setScore(scoreTotal);
+        setSignedIn(isSign)
       } else {
         message.error(scoreRes.message);
       }
@@ -50,7 +53,7 @@ const UserProfile = () => {
   const handleSignIn = async () => {
     // const res = await checkInUsingPost();
     const res = await checkIn();
-    if (res.data === '签到成功') {
+    if (res.data) {
       setSignedIn(true);
       fetchData();
       message.success(res.data);
@@ -131,7 +134,7 @@ const UserProfile = () => {
       <Card style={{  textAlign: 'center', padding: 20 }}>
         <Avatar size={80} src={userData?.data?.userAvatar} />
         <h2 style={{ fontSize: 24 }}>{userData?.data?.userName}</h2>
-        <p style={{ fontSize: 18 }}>积分：{score?.data}</p>
+        <p style={{ fontSize: 18 }}>积分：{score}</p>
         <Button
           type="primary"
           size="large"

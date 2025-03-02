@@ -101,7 +101,7 @@ export async function userLogin(
 }
 
 /** 此处后端没有提供注释 POST /user/logout */
-export async function userLogoutPost(options?: { [key: string]: any }) {
+export async function userLogoutNow(options?: { [key: string]: any }) {
   return request<API.BaseResponseBoolean>("/user/logout", {
     method: "POST",
     ...(options || {}),

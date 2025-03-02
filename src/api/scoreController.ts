@@ -12,7 +12,7 @@ export async function checkIn(options?: { [key: string]: any }) {
 
 /** 此处后端没有提供注释 GET /score/get */
 export async function getUserById1(options?: { [key: string]: any }) {
-  return request<API.BaseResponseLong>("/score/get", {
+  return request<API.BaseResponseScoreVO>("/score/get", {
     method: "GET",
     ...(options || {}),
   });
