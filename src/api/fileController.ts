@@ -21,9 +21,6 @@ export async function uploadFileMinio(
 ) {
   return request<API.BaseResponseString>("/common/upload/minio", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     data: body,
     ...(options || {}),
   });

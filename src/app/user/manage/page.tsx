@@ -99,14 +99,21 @@ const UserProfile = () => {
    */
   const handleAvatarChange = async (info) => {
     try {
-      // const res = await uploadFileUsingPost(info);
-      const res = await uploadFileMinio(info);
+      const file = info.file.originFileObj || info.file;
+      const formData = new FormData();
+      formData.append('file', file);
+      // todo 如果使用openapi进行接口生成的话，要把请求头信息"Content-Type": "application/json"删掉
+      const res = await uploadFileMinio(formData);
+
       if (res.data) {
         setAvatarUrl(res.data);
-
+        message.success('头像上传成功');
+      } else {
+        message.error('头像上传失败: ' + (res.message || '未知错误'));
       }
     } catch (error) {
       console.error('Error in handleAvatarChange:', error);
+      message.error('头像上传失败');
     }
   };
 
