@@ -1,5 +1,14 @@
 'use client'
-import {Attachments, Bubble, BubbleProps, Conversations, Prompts, Sender, useXAgent, useXChat,} from '@ant-design/x';
+import {
+    Attachments,
+    Bubble,
+    BubbleProps,
+    Conversations,
+    Prompts,
+    Sender,
+    useXAgent,
+    useXChat,
+} from '@ant-design/x';
 import {createStyles} from 'antd-style';
 import React, {useEffect} from 'react';
 
@@ -9,7 +18,9 @@ import {Avatar, Badge, Button, type GetProp, Space, Typography} from 'antd';
 import markdownit from 'markdown-it';
 import {useSelector} from "react-redux";
 import {RootState} from "@/stores";
-import {chat, getChatList, getDialogueById} from "@/api/dialoguesController";
+import {getChatList, getDialogueById} from "@/api/dialoguesController";
+import {chatStreamFetch} from "@/api/aiChat/dialoguesController";
+import dynamic from "next/dynamic";
 
 const md = markdownit({ html: true, breaks: true });
 
@@ -170,14 +181,15 @@ const senderPromptsItems: GetProp<typeof Prompts, 'items'> = [
     },
 ];
 
-
+const DynamicIndependent = dynamic(() => Promise.resolve(Independent), {
+    ssr: false,
+});
 
 const Independent: React.FC = () => {
     const currentUser = useSelector((state: RootState) => state.loginUser);
     const roles: GetProp<typeof Bubble.List, 'roles'> = {
         ai: {
             placement: 'start',
-            typing: { step: 5, interval: 20 },
             styles: {
                 content: {
                     borderRadius: 16,
@@ -186,7 +198,6 @@ const Independent: React.FC = () => {
         },
         local: {
             placement: 'end',
-            // avatar: currentUser?.avatar ?? '',
             variant: 'shadow',
         },
     };
@@ -198,15 +209,14 @@ const Independent: React.FC = () => {
 
     const [userContent, setUserContent] = React.useState('');
     const memoryId = React.useRef<number>(0);
-    const defaultConversationsItems = React.useState([
+    const [conversationsItems, setConversationsItems] = React.useState([
         {
             key: '0',
             label: '你想聊点啥?',
         },
     ]);
-    const [conversationsItems, setConversationsItems] = React.useState(defaultConversationsItems);
 
-    const [activeKey, setActiveKey] = React.useState(defaultConversationsItems[0].key);
+    const [activeKey, setActiveKey] = React.useState('0');
 
     const [attachedFiles, setAttachedFiles] = React.useState<GetProp<typeof Attachments, 'items'>>(
         [],
@@ -214,25 +224,51 @@ const Independent: React.FC = () => {
 
     // ==================== Runtime ====================
     const [agent] = useXAgent({
-        request: async ({ message }, { onSuccess }) => {
-            if (message){
-                // 使用当前最新的 memoryId
-                console.log("agent memoryId:", memoryId)
-                const result = await chat({
-                    memoryId: memoryId.current===0?undefined:memoryId.current,
-                    content: message,
-                });
-                if (result?.data?.id){
-                    // setMemoryId(result?.data?.id);
-                    memoryId.current=result?.data?.id;
-                }
-                onSuccess(`${result?.data?.chatResponse}`);
+        request: async ({ message }, { onSuccess, onUpdate }) => {
+            let temp = ''
+            const response = await chatStreamFetch({
+                memoryId: memoryId.current===0?undefined:memoryId.current,
+                content: message,
+            });
+            if (!response.ok) {
+                console.error('Error sending message');
+                return;
             }
+            // 处理SSE流
+            const reader = response?.body?.getReader();
+            const decoder = new TextDecoder('utf-8');
+            if (reader){
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) {
+
+                        break;
+                    }
+                    const chunk = decoder.decode(value, { stream: true });
+                    // 假设每个事件都是以"\n\n"分隔的
+                    const events = chunk.split('data:');
+                    for (const event of events) {
+                        if (event.trim() !== '') {
+                            const data = JSON.parse(event);
+                            temp+=data.chatResponse
+                            onUpdate(temp)
+                            console.log("chatResponse:{}",temp)
+                            memoryId.current= data.id
+                        }
+                    }
+                }
+                onSuccess(temp);
+            }
+
+            //
+
         },
     });
 
     const { onRequest, messages, setMessages } = useXChat({
         agent,
+        requestFallback: "服务器开小差了哦",
+        // 移除 streaming 属性，因为它不是 XChatConfig 类型的有效属性
     });
 
     useEffect(() => {
@@ -243,7 +279,7 @@ const Independent: React.FC = () => {
                     'memoryId': activeKey
                 })
                 const result = resp.data;
-                const chatContent = JSON.parse(result?.chatContent)
+                const chatContent = JSON.parse(result.chatContent)
 
                 const chatContentList = chatContent.map((item, index) => {
                     if (item?.toolExecutionRequests === undefined && item?.toolName === undefined) {
@@ -302,10 +338,10 @@ const Independent: React.FC = () => {
     };
 
     const onAddConversation = () => {
-        // @ts-ignore
+
         setConversationsItems([
             {
-                key: 0,
+                key: '0',
                 label: `开启新对话`,
             },
             ...conversationsItems,
@@ -328,6 +364,7 @@ const Independent: React.FC = () => {
             <Prompts
                 title="你好吗，有什么想询问的吗?"
                 items={placeholderPromptsItems}
+
                 styles={{
                     list: {
                         width: '100%',
@@ -343,9 +380,9 @@ const Independent: React.FC = () => {
 
     const items: GetProp<typeof Bubble.List, 'items'> = messages.map(({ id, message, status }) => ({
         key: id,
-        loading: status === 'loading',
+        // loading: status === 'loading',
         messageRender: renderMarkdown,
-        avatar: <AvatarComponent src={  status ==='local'?currentUser?.userAvatar:'/assets/logo.svg'}/>,
+        avatar: <AvatarComponent src={  status ==='local'? currentUser?.userAvatar: '/assets/logo.svg'}/>,
         role: status === 'local' ? 'local' : 'ai',
         content: message,
     }));
@@ -357,6 +394,7 @@ const Independent: React.FC = () => {
     );
 
     const senderHeader = (
+
         <Sender.Header
             title="附件"
             open={headerOpen}
@@ -384,23 +422,12 @@ const Independent: React.FC = () => {
         </Sender.Header>
     );
 
-    const logoNode = (
-        <div className={styles.logo}>
-            <img
-                src="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*eco6RrQhxbMAAAAAAAAAAAAADgCCAQ/original"
-                draggable={false}
-                alt="logo"
-            />
-            <span>RG智能</span>
-        </div>
-    );
+
 
     // ==================== Render =================
     return (
         <div className={styles.layout}>
             <div className={styles.menu}>
-                {/* 🌟 Logo */}
-                {logoNode}
                 {/* 🌟 添加会话 */}
                 <Button
                     onClick={onAddConversation}
@@ -434,13 +461,13 @@ const Independent: React.FC = () => {
                     onSubmit={onSubmit}
                     onChange={setUserContent}
                     prefix={attachmentsNode}
-
                     loading={agent.isRequesting()}
                     className={styles.sender}
+                    allowSpeech
                 />
             </div>
         </div>
     );
 };
 
-export default Independent;
+export default DynamicIndependent;

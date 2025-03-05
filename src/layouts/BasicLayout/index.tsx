@@ -7,18 +7,15 @@ import Image from "next/image";
 import {usePathname, useRouter} from "next/navigation";
 import Link from "next/link";
 // import GlobalFooter from "@/components/GlobalFooter";
-
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@/stores";
 import getAccessibleMenus from "@/access/menuAccess";
-// import { userLogoutUsingPost } from "@/api/userController";
 import {setLoginUser} from "@/stores/loginUser";
 import {DEFAULT_USER} from "@/constants/user";
 
 import "./index.css";
 import {menus} from "@/config/menu";
 import {userLogoutNow} from "@/api/userController";
-
 
 
 interface Props {

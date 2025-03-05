@@ -153,14 +153,13 @@ declare namespace API {
     userId?: number;
   };
 
-  type chatParams = {
+  type ChatRequest = {
     memoryId?: number;
-    content: string;
+    content?: string;
   };
 
   type chatStreamParams = {
-    memoryId?: number;
-    content: string;
+    chatRequest: ChatRequest;
   };
 
   type ChatVO = {

@@ -2,17 +2,17 @@
 /* eslint-disable */
 import request from "@/libs/request";
 
-/** 此处后端没有提供注释 GET /dialogues/chat */
+/** 此处后端没有提供注释 POST /dialogues/chat */
 export async function chat(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.chatParams,
+  body: API.ChatRequest,
   options?: { [key: string]: any }
 ) {
   return request<API.BaseResponseChatVO>("/dialogues/chat", {
-    method: "GET",
-    params: {
-      ...params,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
+    data: body,
     ...(options || {}),
   });
 }
@@ -53,6 +53,8 @@ export async function chatStream(
     method: "GET",
     params: {
       ...params,
+      chatRequest: undefined,
+      ...params["chatRequest"],
     },
     ...(options || {}),
   });

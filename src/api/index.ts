@@ -4,13 +4,13 @@
 // API 唯一标识：
 import * as userController from "./userController";
 import * as scoreController from "./scoreController";
+import * as dialoguesController from "./dialoguesController";
 import * as fileController from "./fileController";
 import * as chartController from "./chartController";
-import * as dialoguesController from "./dialoguesController";
 export default {
   userController,
   scoreController,
+  dialoguesController,
   fileController,
   chartController,
-  dialoguesController,
 };
