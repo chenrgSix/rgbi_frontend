@@ -1,4 +1,39 @@
 declare namespace API {
+  type AiModelUpdateRequest = {
+    id?: number;
+    name?: string;
+    type?: string;
+    setting?: string;
+    remark?: string;
+    platform?: string;
+    maxInputTokens?: number;
+    maxOutputTokens?: number;
+    isFree?: number;
+    isEnable?: number;
+  };
+
+  type AiModelVO = {
+    id?: number;
+    userId?: number;
+    name?: string;
+    type?: string;
+    setting?: string;
+    remark?: string;
+    platform?: string;
+    maxInputTokens?: number;
+    maxOutputTokens?: number;
+    isFree?: number;
+    isEnable?: number;
+    createTime?: string;
+    updateTime?: string;
+  };
+
+  type BaseResponseAiModelVO = {
+    code?: number;
+    data?: AiModelVO;
+    message?: string;
+  };
+
   type BaseResponseBiResponse = {
     code?: number;
     data?: BiResponse;
@@ -17,21 +52,15 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponseChatVO = {
-    code?: number;
-    data?: ChatVO;
-    message?: string;
-  };
-
   type BaseResponseDialoguesVO = {
     code?: number;
     data?: DialoguesVO;
     message?: string;
   };
 
-  type BaseResponseListDialogueSummaryVO = {
+  type BaseResponseListLLMModelVo = {
     code?: number;
-    data?: DialogueSummaryVO[];
+    data?: LLMModelVo[];
     message?: string;
   };
 
@@ -50,6 +79,12 @@ declare namespace API {
   type BaseResponsePageChart = {
     code?: number;
     data?: PageChart;
+    message?: string;
+  };
+
+  type BaseResponsePageDialogueSummaryVO = {
+    code?: number;
+    data?: PageDialogueSummaryVO;
     message?: string;
   };
 
@@ -154,21 +189,20 @@ declare namespace API {
   };
 
   type ChatRequest = {
+    modelName?: string;
     memoryId?: number;
     content?: string;
   };
 
-  type chatStreamParams = {
-    chatRequest: ChatRequest;
-  };
-
-  type ChatVO = {
-    id?: number;
-    chatResponse?: string;
-  };
-
   type DeleteRequest = {
     id?: number;
+  };
+
+  type DialoguesQueryRequest = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
   };
 
   type DialogueSummaryVO = {
@@ -201,6 +235,10 @@ declare namespace API {
     loginUser?: User;
   };
 
+  type getAiModelByIdParams = {
+    modelId: number;
+  };
+
   type getChartByIdParams = {
     id: number;
   };
@@ -215,6 +253,14 @@ declare namespace API {
 
   type getUserVOByIdParams = {
     id: number;
+  };
+
+  type LLMModelVo = {
+    modelId?: number;
+    modelName?: string;
+    modelPlatform?: string;
+    isFree?: number;
+    isEnable?: number;
   };
 
   type LoginUserVO = {
@@ -240,6 +286,34 @@ declare namespace API {
     orders?: OrderItem[];
     optimizeCountSql?: PageChart;
     searchCount?: PageChart;
+    optimizeJoinOfCountSql?: boolean;
+    maxLimit?: number;
+    countId?: string;
+    pages?: number;
+  };
+
+  type PageDialogueSummaryVO = {
+    records?: DialogueSummaryVO[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: PageDialogueSummaryVO;
+    searchCount?: PageDialogueSummaryVO;
+    optimizeJoinOfCountSql?: boolean;
+    maxLimit?: number;
+    countId?: string;
+    pages?: number;
+  };
+
+  type PageSysConfigVO = {
+    records?: SysConfigVO[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: PageSysConfigVO;
+    searchCount?: PageSysConfigVO;
     optimizeJoinOfCountSql?: boolean;
     maxLimit?: number;
     countId?: string;
@@ -281,6 +355,23 @@ declare namespace API {
 
   type SseEmitter = {
     timeout?: number;
+  };
+
+  type SysConfigQueryRequest = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+  };
+
+  type SysConfigUpdateRequest = {
+    name?: string;
+    value?: string;
+  };
+
+  type SysConfigVO = {
+    name?: string;
+    value?: string;
   };
 
   type User = {
