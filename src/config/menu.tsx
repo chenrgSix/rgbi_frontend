@@ -11,6 +11,11 @@ export const menus = [
         access: ACCESS_ENUM.USER
     },
     {
+        path: "/knowledge/base",
+        name: "知识库",
+        access: ACCESS_ENUM.USER
+    },
+    {
         path: "/chart/gen",
         name: "智能分析",
         access: ACCESS_ENUM.USER

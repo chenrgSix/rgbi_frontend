@@ -5,6 +5,7 @@
 import * as userController from "./userController";
 import * as sysConfigController from "./sysConfigController";
 import * as scoreController from "./scoreController";
+import * as knowledgeBaseController from "./knowledgeBaseController";
 import * as dialoguesController from "./dialoguesController";
 import * as fileController from "./fileController";
 import * as chartController from "./chartController";
@@ -13,6 +14,7 @@ export default {
   userController,
   sysConfigController,
   scoreController,
+  knowledgeBaseController,
   dialoguesController,
   fileController,
   chartController,

@@ -1,4 +1,8 @@
 declare namespace API {
+  type addDocumentParams = {
+    knowledgeAddDocumentRequest: KnowledgeAddDocumentRequest;
+  };
+
   type AiModelUpdateRequest = {
     id?: number;
     name?: string;
@@ -58,6 +62,18 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseDocumentInfoVO = {
+    code?: number;
+    data?: DocumentInfoVO;
+    message?: string;
+  };
+
+  type BaseResponseKnowledgeBaseVO = {
+    code?: number;
+    data?: KnowledgeBaseVO;
+    message?: string;
+  };
+
   type BaseResponseListLLMModelVo = {
     code?: number;
     data?: LLMModelVo[];
@@ -85,6 +101,18 @@ declare namespace API {
   type BaseResponsePageDialogueSummaryVO = {
     code?: number;
     data?: PageDialogueSummaryVO;
+    message?: string;
+  };
+
+  type BaseResponsePageKnowledgeBaseVO = {
+    code?: number;
+    data?: PageKnowledgeBaseVO;
+    message?: string;
+  };
+
+  type BaseResponsePageKnowledgeDocumentVO = {
+    code?: number;
+    data?: PageKnowledgeDocumentVO;
     message?: string;
   };
 
@@ -191,6 +219,7 @@ declare namespace API {
   type ChatRequest = {
     modelName?: string;
     memoryId?: number;
+    kbId?: number;
     content?: string;
   };
 
@@ -220,6 +249,25 @@ declare namespace API {
     updateTime?: string;
   };
 
+  type DocumentChunk = {
+    id?: string;
+    vector?: number[];
+    text?: string;
+    metadata?: Record<string, any>;
+  };
+
+  type DocumentInfoVO = {
+    chunks?: DocumentChunk[];
+    id?: number;
+    fileId?: number;
+    docType?: string;
+    createTime?: string;
+    updateTime?: string;
+    pages?: number;
+    size?: number;
+    current?: number;
+  };
+
   type genChartBuAiAsyncMqParams = {
     genChartByAiRequest: GenChartByAiRequest;
   };
@@ -247,6 +295,10 @@ declare namespace API {
     memoryId: number;
   };
 
+  type getKnowledgeBaseByIdParams = {
+    id: number;
+  };
+
   type getUserByIdParams = {
     id: number;
   };
@@ -255,12 +307,73 @@ declare namespace API {
     id: number;
   };
 
+  type KnowledgeAddDocumentRequest = {
+    kbId?: number;
+  };
+
+  type KnowledgeBaseAddRequest = {
+    title?: string;
+    remark?: string;
+    isPublic?: number;
+    ingestMaxSegment?: number;
+    ingestMaxOverlap?: number;
+  };
+
+  type KnowledgeBaseQueryRequest = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    title?: string;
+    ingestModelName?: string;
+  };
+
+  type KnowledgeBaseVO = {
+    id?: number;
+    title?: string;
+    remark?: string;
+    isPublic?: number;
+    docNum?: number;
+    ingestMaxSegment?: number;
+    ingestMaxOverlap?: number;
+    ingestModelName?: string;
+    createTime?: string;
+    updateTime?: string;
+  };
+
+  type KnowledgeDocumentQueryRequest = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    id?: number;
+    kbId?: number;
+    status?: number;
+  };
+
+  type KnowledgeDocumentVO = {
+    id?: number;
+    kbId?: number;
+    userId?: number;
+    fileId?: number;
+    docType?: string;
+    status?: number;
+    createTime?: string;
+    updateTime?: string;
+    displayName?: string;
+    fileSize?: number;
+  };
+
   type LLMModelVo = {
     modelId?: number;
     modelName?: string;
     modelPlatform?: string;
     isFree?: number;
     isEnable?: number;
+  };
+
+  type loadDocumentParams = {
+    docId: number;
   };
 
   type LoginUserVO = {
@@ -300,6 +413,34 @@ declare namespace API {
     orders?: OrderItem[];
     optimizeCountSql?: PageDialogueSummaryVO;
     searchCount?: PageDialogueSummaryVO;
+    optimizeJoinOfCountSql?: boolean;
+    maxLimit?: number;
+    countId?: string;
+    pages?: number;
+  };
+
+  type PageKnowledgeBaseVO = {
+    records?: KnowledgeBaseVO[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: PageKnowledgeBaseVO;
+    searchCount?: PageKnowledgeBaseVO;
+    optimizeJoinOfCountSql?: boolean;
+    maxLimit?: number;
+    countId?: string;
+    pages?: number;
+  };
+
+  type PageKnowledgeDocumentVO = {
+    records?: KnowledgeDocumentVO[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: PageKnowledgeDocumentVO;
+    searchCount?: PageKnowledgeDocumentVO;
     optimizeJoinOfCountSql?: boolean;
     maxLimit?: number;
     countId?: string;
