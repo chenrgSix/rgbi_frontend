@@ -44,7 +44,6 @@ const InitLayout: React.FC<
     // 不需要 BasicLayout 的路径
     const noLayoutPaths = ['/user/login', '/user/register'];
     const needLayout = !noLayoutPaths.includes(pathname) && loginUser.id;
-
     return needLayout ? (
         <BasicLayout>
             <AccessLayout>{children}</AccessLayout>
