@@ -17,6 +17,21 @@ export async function addKnowledgeBase(
   });
 }
 
+/** 此处后端没有提供注释 POST /knowledge/doc/delete */
+export async function deleteDocument(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.deleteDocumentParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseBoolean>("/knowledge/doc/delete", {
+    method: "POST",
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 POST /knowledge/doc/info */
 export async function getDocumentInfo(
   body: API.KnowledgeDocumentQueryRequest,
@@ -65,6 +80,27 @@ export async function listDocByPage(
   );
 }
 
+/** 此处后端没有提供注释 POST /knowledge/doc/upload */
+export async function addDocument(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.addDocumentParams,
+  body: {},
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseBoolean>("/knowledge/doc/upload", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    params: {
+      ...params,
+      knowledgeAddDocumentRequest: undefined,
+      ...params["knowledgeAddDocumentRequest"],
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
 
 /** 此处后端没有提供注释 GET /knowledge/get */
 export async function getKnowledgeBaseById(

@@ -23,7 +23,7 @@ import {
 import {deleteDialogueById, getChatList, getDialogueById} from "@/api/dialoguesController";
 import {getSupportLlmModel} from "@/api/aiModelController";
 import markdownit from "markdown-it";
-import {chatStreamFetch} from "@/sse/aiModelController";
+import {chatStreamFetch} from "@/services/aiModelController";
 import {useSelector} from "react-redux";
 import {RootState} from "@/stores";
 import dynamic from "next/dynamic";

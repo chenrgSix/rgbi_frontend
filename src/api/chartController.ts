@@ -69,7 +69,27 @@ export async function genChartBuAiAsync(
   });
 }
 
-
+/** 此处后端没有提供注释 POST /chart/gen/async/mq */
+export async function genChartBuAiAsyncMq(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.genChartBuAiAsyncMqParams,
+  body: {},
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseBiResponse>("/chart/gen/async/mq", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    params: {
+      ...params,
+      genChartByAiRequest: undefined,
+      ...params["genChartByAiRequest"],
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
 
 /** 此处后端没有提供注释 POST /chart/gen/retry */
 export async function retryGenChart(
@@ -146,3 +166,17 @@ export async function listMyChartByPage(
   });
 }
 
+/** 此处后端没有提供注释 POST /chart/update */
+export async function updateChart(
+  body: API.ChartUpdateRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseBoolean>("/chart/update", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
+    ...(options || {}),
+  });
+}

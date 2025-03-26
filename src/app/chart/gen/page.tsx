@@ -4,7 +4,8 @@ import { Button, Card, Form, Input, message, Select, Space, Upload } from 'antd'
 import TextArea from 'antd/es/input/TextArea';
 import React, { useState } from 'react';
 import { useForm } from 'antd/es/form/Form';
-import {genChartBuAiAsyncMq} from "@/api/chartController";
+import {genChartBuAiAsyncMq} from "@/services/chartController";
+
 /**
  * 添加图表(异步)页面
  * @constructor

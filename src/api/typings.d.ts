@@ -223,6 +223,10 @@ declare namespace API {
     content?: string;
   };
 
+  type deleteDocumentParams = {
+    docId: number;
+  };
+
   type DeleteRequest = {
     id?: number;
   };
@@ -266,6 +270,7 @@ declare namespace API {
     pages?: number;
     size?: number;
     current?: number;
+    total?: number;
   };
 
   type genChartBuAiAsyncMqParams = {
@@ -330,6 +335,7 @@ declare namespace API {
 
   type KnowledgeBaseVO = {
     id?: number;
+    userId?: number;
     title?: string;
     remark?: string;
     isPublic?: number;
