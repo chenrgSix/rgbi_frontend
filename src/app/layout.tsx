@@ -1,4 +1,5 @@
 "use client";
+import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import BasicLayout from "@/layouts/BasicLayout";
 import React, { useCallback, useEffect } from "react";
@@ -8,7 +9,7 @@ import { usePathname } from "next/navigation";
 
 import AccessLayout from "@/access/AccessLayout";
 import { setLoginUser } from "@/stores/loginUser";
-import "./globals.css";
+
 import {getLoginUser} from "@/api/userController";
 
 /**
@@ -43,7 +44,7 @@ const InitLayout: React.FC<
     }, []);
     // 不需要 BasicLayout 的路径
     const noLayoutPaths = ['/user/login', '/user/register'];
-    const needLayout = !noLayoutPaths.includes(pathname) && loginUser.id;
+    const needLayout = !noLayoutPaths.includes(pathname) && loginUser?.id;
     return needLayout ? (
         <BasicLayout>
             <AccessLayout>{children}</AccessLayout>

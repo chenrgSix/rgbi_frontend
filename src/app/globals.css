@@ -1,6 +1,4 @@
 @import "tailwindcss";
-
-
 * {
   box-sizing: border-box;
   padding: 0;
@@ -25,6 +23,3 @@ body {
   scrollbar-width: none;
 }
 
-/*@tailwind base;*/
-/*@tailwind components;*/
-/*@tailwind utilities;*/

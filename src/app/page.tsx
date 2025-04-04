@@ -3,7 +3,6 @@ import {Button, Card, Col, Row, Space, Statistic, Typography} from "antd";
 import {AreaChartOutlined, DatabaseOutlined, RobotOutlined} from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
-
 const { Title, Paragraph } = Typography;
 
 export default function Home() {
@@ -30,8 +29,8 @@ export default function Home() {
           <Image 
             src="/assets/logo.svg" 
             alt="RG智能数据平台" 
-            width={320} 
-            height={320} 
+            width={240}
+            height={240}
             className="drop-shadow-xl" 
             style={{ animation: 'pulse 3s infinite ease-in-out', filter: 'drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1))' }}
           />
@@ -43,7 +42,7 @@ export default function Home() {
         <Col xs={24} sm={12} md={6}>
           <Card bordered={false} className="h-full shadow-md hover:shadow-lg transition-all duration-300" style={{ borderRadius: '12px', overflow: 'hidden' }}>
             <Statistic 
-              title={<span style={{ fontSize: '16px', fontWeight: 500 }}>智能分析</span>} 
+              title={<span style={{ fontSize: '16px', fontWeight: 500 }}>智能分析</span>}
               value={1000} 
               suffix="+" 
               valueStyle={{ color: '#1890ff', fontSize: '28px', fontWeight: 600 }}
@@ -88,7 +87,7 @@ export default function Home() {
       </Row>
 
       {/* 功能模块 */}
-      <Title level={2} className="mb-16 text-center" style={{ position: 'relative', display: 'inline-block', left: '50%', transform: 'translateX(-50%)', paddingBottom: '10px' }}>
+      <Title level={2} className="mb-16 text-center" style={{ position: 'relative', display: 'inline-block', left: '50%', transform: 'translateX(-50%)', paddingBottom: '10px', margin: '18px 0' }}>
         <span style={{ background: 'linear-gradient(to right, #1890ff, #722ed1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>核心功能</span>
         <div style={{ position: 'absolute', bottom: 0, left: '25%', width: '50%', height: '3px', background: 'linear-gradient(to right, #1890ff, #722ed1)' }}></div>
       </Title>
@@ -100,13 +99,13 @@ export default function Home() {
             style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)' }}
             cover={
               <div className="flex justify-center items-center py-8 bg-[#1890ff0f]">
-                <AreaChartOutlined style={{ fontSize: 72, color: '#1890ff' }} />
+                <AreaChartOutlined style={{ fontSize: 64, color: '#1890ff' }} />
               </div>
             }
           >
             <Card.Meta 
               title={<span style={{ fontSize: '18px', fontWeight: 600 }}>智能图表分析</span>} 
-              description={<span style={{ fontSize: '14px', lineHeight: 1.6, display: 'block', marginTop: '8px' }}>上传CSV数据，AI自动生成多种图表，一键解读数据趋势和规律，让数据分析变得简单高效。</span>} 
+              description={<span style={{ fontSize: '14px', lineHeight: 1.6, display: 'block', margin: '8px 0' }}>上传CSV数据，AI自动生成多种图表，一键解读数据趋势和规律，让数据分析变得简单高效。</span>}
             />
             <div className="mt-6">
               <Link href="/chart/gen">
@@ -122,13 +121,13 @@ export default function Home() {
             style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)' }}
             cover={
               <div className="flex justify-center items-center py-8 bg-[#52c41a0f]">
-                <DatabaseOutlined style={{ fontSize: 72, color: '#52c41a' }} />
+                <DatabaseOutlined style={{ fontSize: 64, color: '#52c41a' }} />
               </div>
             }
           >
             <Card.Meta 
               title={<span style={{ fontSize: '18px', fontWeight: 600 }}>知识库管理</span>} 
-              description={<span style={{ fontSize: '14px', lineHeight: 1.6, display: 'block', marginTop: '8px' }}>构建企业专属知识库，沉淀业务数据和经验，支持智能检索和问答，提升团队协作效率。</span>} 
+              description={<span style={{ fontSize: '14px', lineHeight: 1.6, display: 'block', margin: '8px 0' }}>构建企业专属知识库，沉淀业务数据和经验，支持智能检索和问答，提升团队协作效率。</span>}
             />
             <div className="mt-6">
               <Link href="/knowledge/base">
@@ -144,17 +143,20 @@ export default function Home() {
             style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)' }}
             cover={
               <div className="flex justify-center items-center py-8 bg-[#722ed10f]">
-                <RobotOutlined style={{ fontSize: 72, color: '#722ed1' }} />
+                <RobotOutlined style={{ fontSize: 64, color: '#722ed1' }} />
               </div>
             }
           >
             <Card.Meta 
               title={<span style={{ fontSize: '18px', fontWeight: 600 }}>AI智能对话</span>} 
-              description={<span style={{ fontSize: '14px', lineHeight: 1.6, display: 'block', marginTop: '8px' }}>基于大语言模型的智能对话系统，可以回答业务问题、生成报告、提供数据分析建议。</span>} 
+              description={<span style={{ fontSize: '14px',
+                lineHeight: 1.6,
+                display: 'block',
+                margin: '8px 0' }}>基于大语言模型的智能对话系统，可以回答业务问题、生成报告、提供数据分析建议。</span>}
             />
             <div className="mt-6">
               <Link href="/ai/chat">
-                <Button type="primary" ghost style={{ borderRadius: '6px', width: '100%', borderColor: '#722ed1', color: '#722ed1' }}>立即体验</Button>
+                <Button type="primary" ghost style={{borderRadius: '6px', width: '100%', borderColor: '#722ed1', color: '#722ed1' }}>立即体验</Button>
               </Link>
             </div>
           </Card>
@@ -162,9 +164,9 @@ export default function Home() {
       </Row>
 
       {/* 底部CTA */}
-      <div className="text-center py-20 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50" style={{ borderRadius: '16px', boxShadow: 'inset 0 2px 10px rgba(0, 0, 0, 0.05)' }}>
-        <Title level={3} style={{ marginBottom: '16px', background: 'linear-gradient(to right, #1890ff, #722ed1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>开始您的智能数据之旅</Title>
-        <Paragraph className="mb-8" style={{ fontSize: '16px', maxWidth: '600px', margin: '0 auto 24px', color: '#555' }}>体验AI驱动的数据分析，让决策更智能、更高效</Paragraph>
+      <div className="text-center py-20 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50" style={{ borderRadius: '16px',padding: "10px 0", boxShadow: 'inset 0 2px 10px rgba(0, 0, 0, 0.05)' }}>
+        <Title level={3} style={{ marginBottom: '10px', background: 'linear-gradient(to right, #1890ff, #722ed1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>开始您的智能数据之旅</Title>
+        <Paragraph className="mb-8" style={{ fontSize: '16px', maxWidth: '600px', margin: '0 auto 10px', color: '#555' }}>体验AI驱动的数据分析，让决策更智能、更高效</Paragraph>
         <Link href="/chart/gen">
           <Button type="primary" size="large" style={{ borderRadius: '6px', height: '48px', padding: '0 32px', boxShadow: '0 4px 12px rgba(24, 144, 255, 0.15)' }}>立即开始</Button>
         </Link>
