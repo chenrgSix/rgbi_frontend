@@ -117,6 +117,19 @@ export async function getKnowledgeBaseById(
   });
 }
 
+/** 此处后端没有提供注释 GET /knowledge/get/selectable */
+export async function getSelectableKnowledgeBaseByUserId(options?: {
+  [key: string]: any;
+}) {
+  return request<API.BaseResponseListKnowledgeBaseVO>(
+    "/knowledge/get/selectable",
+    {
+      method: "GET",
+      ...(options || {}),
+    }
+  );
+}
+
 /** 此处后端没有提供注释 POST /knowledge/list/page */
 export async function listKnowledgeBaseByPage(
   body: API.KnowledgeBaseQueryRequest,

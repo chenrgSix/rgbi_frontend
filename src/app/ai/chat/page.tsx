@@ -10,15 +10,15 @@ import {
     useXAgent,
     useXChat,
 } from '@ant-design/x';
-import {Avatar, Badge, Button, Divider, Flex, type GetProp, Select, Space, Typography} from 'antd';
+import {Avatar, Badge, Button, Drawer, Flex, type GetProp, Modal, Select, Space, Tag, Typography} from 'antd';
 import React, {useEffect, useRef} from 'react';
 import {
     CloudUploadOutlined,
     DeleteOutlined,
-    FireOutlined,
+    FireOutlined, MenuUnfoldOutlined,
     PaperClipOutlined,
     PlusOutlined,
-    ReadOutlined,
+    ReadOutlined, SettingOutlined,
 } from '@ant-design/icons';
 import {deleteDialogueById, getChatList, getDialogueById} from "@/api/dialoguesController";
 import {getSupportLlmModel} from "@/api/aiModelController";
@@ -31,6 +31,7 @@ import LLMModelVo = API.LLMModelVo;
 import ChatRequest = API.ChatRequest;
 import DialoguesQueryRequest = API.DialoguesQueryRequest;
 import PageDialogueSummaryVO = API.PageDialogueSummaryVO;
+import {getSelectableKnowledgeBaseByUserId} from "@/api/knowledgeBaseController";
 
 const md = markdownit({html: true, breaks: true});
 const renderMarkdown: BubbleProps['messageRender'] = (content) => (
@@ -71,10 +72,16 @@ const Independent: React.FC = () => {
     const [headerOpen, setHeaderOpen] = React.useState(false);
     const [selectedModel, setSelectedModel] = React.useState<string>('');
     const [modelList, setModelList] = React.useState<LLMModelVo[]>([]);
+    const [chatListopen, setChatListOpen] = React.useState(false);
+    const [isLastPage, setIsLastPage] = React.useState(false);
     const [activeKey, setActiveKey] = React.useState('0');
+    const [kbSimples, setKbSimples] = React.useState([]);
+    const [kbAll, setKbAll] = React.useState([]);
+    const [kbIds, setKbIds] = React.useState<number[]>([]);
     const [userContent, setUserContent] = React.useState('');
     const abortRef = useRef(() => {
     });
+    const [openKbSelect, setOpenKbSelect] = React.useState(false);
     const [conversationsItems, setConversationsItems] = React.useState([
         {
             key: '0',
@@ -112,18 +119,20 @@ const Independent: React.FC = () => {
     const chatReq = React.useRef<ChatRequest>({
         modelName: '',
         memoryId: undefined,
+        kbIds:kbIds,
         content: ''
     });
     const chatQueryReq = React.useRef<DialoguesQueryRequest>({
         current: 1,
-        pageSize: 15,
+        pageSize: 13,
     });
-    const chatData = React.useRef<PageDialogueSummaryVO>({
+    const  [chatData, setChatDate] = React.useState<PageDialogueSummaryVO>({
         records: [],
         total: 0,
         size: 0,
         current: 0
     });
+
     const AvatarComponent = ({src}) => (<Avatar src={src}/>);
     // ==================== Nodes ====================
     const senderHeader = (
@@ -160,7 +169,7 @@ const Independent: React.FC = () => {
         </Badge>
     );
     const onAddConversation = () => {
-
+        chatReq.current.kbIds=[]
         setConversationsItems([
             {
                 key: '0',
@@ -294,18 +303,48 @@ const Independent: React.FC = () => {
     const onConversationClick: GetProp<typeof Conversations, 'onActiveChange'> = (key) => {
         setActiveKey(key);
     };
+    const showKbSelect = () => {
+        setOpenKbSelect(true);
+    };
     const loadChatList = async () => {
         // 加载会话列表
         const resp = await getChatList(chatQueryReq.current)
-        chatData.current = resp.data
-        console.log(resp.data)
+        // chatData.current = resp.data
+        setChatDate(resp.data)
+        if(resp.data.current>=resp.data.pages){
+            setIsLastPage(true)
+        }
+        console.log("loadChatList:",resp.data)
         const chatList = resp.data.records
         const items = chatList.map((item: { id: number; chatTitle: string; }) => ({
             key: item.id,
             label: item.chatTitle
         }))
-        setConversationsItems(items);
+        setConversationsItems([...conversationsItems,...items]);
     }
+    const loadKbAll = async () => {
+        if(kbAll.length===0){
+            const {data} = await getSelectableKnowledgeBaseByUserId()
+            const sle = data.map(kb=> ({
+                value: kb.id,
+                label: kb.title })
+            )
+            setKbAll(sle)
+            console.log("kbAll:",data)
+        }
+    }
+    const nextChatList = async ()=>{
+        if (chatData?.current!=undefined) {
+            console.log("chatQueryReq.current.current",chatQueryReq.current.current)
+            chatQueryReq.current.current = (chatQueryReq.current.current??0)+1
+        }
+        console.log("来了老弟")
+        await loadChatList()
+    }
+    const handleKbChange = (value: number[]) => {
+        setKbIds(value)
+        console.log(`Selected: ${value}`);
+    };
     const loadModelLLMList = async () => {
         // 加载模型列表
         const {data} = await getSupportLlmModel()
@@ -320,20 +359,28 @@ const Independent: React.FC = () => {
         const fetchData = async () => {
             await loadChatList()
             await loadModelLLMList()
+            await loadKbAll()
         };
         fetchData();
     }, []);
     useEffect(() => {
-
+        const kbIdList: number[] = kbSimples.map(i=>i.id)
+        setKbIds(kbIdList);
+    }, [kbSimples]);
+    useEffect(() => {
+        chatReq.current.kbIds = kbIds
+    }, [kbIds]);
+    useEffect(() => {
         if (activeKey !== undefined && activeKey.length > 5 && delDialogues.current != activeKey) {
             console.log("setMessages ", messages);
+
             const fetchData = async () => {
                 const resp = await getDialogueById({
                     'memoryId': activeKey
                 })
                 const result = resp.data;
+                setKbSimples(resp.data.kbSimples??[])
                 const chatContent = JSON.parse(result.chatContent)
-
                 const chatContentList = chatContent.map((item, index) => {
                     if (item?.toolExecutionRequests === undefined && item?.toolName === undefined) {
                         console.log(item);
@@ -373,9 +420,15 @@ const Independent: React.FC = () => {
     }, [selectedModel]);
     return (
         <>
-            <Flex className="h-[82vh]" gap={12} style={{flexDirection: 'row'}}>
-                {/* 模型选择器和对话列表 */}
-                <Flex vertical style={{flex: '0 0 auto', paddingRight: '12px'}}>
+            <Drawer
+                title="Basic Drawer"
+                placement="left"
+                closable={false}
+                onClose={()=>setChatListOpen(false)}
+                open={chatListopen}
+                key="left"
+            >
+                <div style={{padding: '0px 12px 0px 12px'}}>
                     <Button
                         onClick={onAddConversation}
                         type="primary"
@@ -384,36 +437,69 @@ const Independent: React.FC = () => {
                     >
                         开启新对话
                     </Button>
-                    {/* 模型选择器 */}
-                    <div style={{padding: '0 12px 0px 12px', marginBottom: '12px'}}>
+                </div>
 
-                        <Select
-                            showSearch
-                            style={{width: '100%'}}
-                            placeholder="选择AI模型"
-                            value={selectedModel}
-                            onChange={setSelectedModel}
-                            optionFilterProp="label"
-                            options={modelList?.map(model => ({
-                                value: model.modelName,
-                                label: model.modelName
-                            }))}
-                            filterSort={(optionA, optionB) =>
-                                (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                            }
-                        />
-                    </div>
-                    {/* 对话列表 */}
-                    <Conversations
-                        style={{width: '100%'}} // 修改为100%以填满容器宽度
-                        items={conversationsItems}
-                        activeKey={activeKey}
-                        menu={conversationMenuConfig}
-                        onActiveChange={onConversationClick}
+                {/* 模型选择器 */}
+                <div style={{padding: '10px 12px 0px 12px'}}>
+
+                    <Select
+                        showSearch
+                        style={{width: '100%'}}
+                        placeholder="选择AI模型"
+                        value={selectedModel}
+                        onChange={setSelectedModel}
+                        optionFilterProp="label"
+                        options={modelList?.map(model => ({
+                            value: model.modelName,
+                            label: model.modelName
+                        }))}
+                        filterSort={(optionA, optionB) =>
+                            (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                        }
                     />
-                </Flex>
+                </div>
 
-                <Divider type="vertical" style={{height: 'auto'}}/> {/* 修改为auto以适应内容高度 */}
+                {/* 对话列表 */}
+                <Conversations
+                    style={{width: '100%'}} // 修改为100%以填满容器宽度
+                    items={conversationsItems}
+                    activeKey={activeKey}
+                    menu={conversationMenuConfig}
+                    onActiveChange={onConversationClick}
+                />
+                {!isLastPage&&<Button type={"link"}  onClick={nextChatList}>点击加载更多</Button>}
+            </Drawer>
+            <Flex className="h-[82vh]" gap={12} style={{flexDirection: 'row'}}>
+                {/* 模型选择器和对话列表 */}
+                {/*<Flex vertical style={{flex: '0 0 auto', paddingRight: '12px'}}>*/}
+
+                {/*</Flex>*/}
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
+                    {kbSimples&&kbSimples.map((kbSimple, index) => (
+                        <Tag key={index} bordered={false} color="blue" style={{marginBottom: '3px'}}>
+                            {/*设置全局知识库配置，从这取映射值*/}
+                            {kbSimple.title}
+                        </Tag>
+                    ))}
+
+                    <Button
+                        // onClick={onAddConversation}
+                        onClick={()=>setChatListOpen(true)}
+                        size="small"
+                        style={{marginBottom: '10px'}}
+                        type={"primary"}
+                        icon={<MenuUnfoldOutlined />}
+                    >记录</Button>
+                    <Button
+                        // onClick={onAddConversation}
+                        onClick={showKbSelect}
+                        size="small"
+                        type={"primary"}
+                        icon={<SettingOutlined />}
+                    >配置</Button>
+                </div>
+
+                {/*<Divider type="vertical" style={{height: 'auto'}}/> /!* 修改为auto以适应内容高度 *!/*/}
 
                 <Flex vertical
                       style={{flex: 1}}
@@ -437,6 +523,26 @@ const Independent: React.FC = () => {
                     />
                 </Flex>
             </Flex>
+            <Modal
+                title="知识库选择"
+                open={openKbSelect}
+                onOk={()=>{console.log("ok")}}
+                onCancel={()=>{setOpenKbSelect(false)}}
+            >
+                <Select
+                    mode="multiple"
+                    size={"large"}
+                    maxCount={3}
+                    placeholder="选择知识库"
+                    value={kbIds}
+                    onChange={handleKbChange}
+                    style={{ width: '100%' }}
+                    options={kbAll}
+                    filterOption={(input, option) =>
+                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                    }
+                />
+            </Modal>
         </>
     );
 };

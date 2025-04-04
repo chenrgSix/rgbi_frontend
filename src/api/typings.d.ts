@@ -74,6 +74,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseListKnowledgeBaseVO = {
+    code?: number;
+    data?: KnowledgeBaseVO[];
+    message?: string;
+  };
+
   type BaseResponseListLLMModelVo = {
     code?: number;
     data?: LLMModelVo[];
@@ -219,7 +225,7 @@ declare namespace API {
   type ChatRequest = {
     modelName?: string;
     memoryId?: number;
-    kbId?: number;
+    kbIds?: number[];
     content?: string;
   };
 
@@ -240,6 +246,7 @@ declare namespace API {
 
   type DialogueSummaryVO = {
     id?: number;
+    kbIds?: number[];
     chatTitle?: string;
     createTime?: string;
   };
@@ -247,6 +254,7 @@ declare namespace API {
   type DialoguesVO = {
     id?: number;
     userId?: number;
+    kbSimples?: KBSimpleVO[];
     chatContent?: string;
     chatTitle?: string;
     createTime?: string;
@@ -310,6 +318,11 @@ declare namespace API {
 
   type getUserVOByIdParams = {
     id: number;
+  };
+
+  type KBSimpleVO = {
+    id?: number;
+    title?: string;
   };
 
   type KnowledgeAddDocumentRequest = {
