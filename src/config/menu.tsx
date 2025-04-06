@@ -35,6 +35,11 @@ export const menus = [
         name: "个人信息",
         access: ACCESS_ENUM.USER
     },
+    {
+        path: "/ai/manage",
+        name: "模型管理",
+        access: ACCESS_ENUM.ADMIN
+    },
 ] as MenuDataItem[];
 
 // 根据全部路径查找菜单

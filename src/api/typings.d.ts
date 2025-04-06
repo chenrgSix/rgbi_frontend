@@ -3,6 +3,60 @@ declare namespace API {
     knowledgeAddDocumentRequest: KnowledgeAddDocumentRequest;
   };
 
+  type AiModel = {
+    id?: number;
+    userId?: number;
+    name?: string;
+    type?: string;
+    setting?: string;
+    remark?: string;
+    platform?: string;
+    maxInputTokens?: number;
+    maxOutputTokens?: number;
+    isFree?: number;
+    isEnable?: number;
+    createTime?: string;
+    updateTime?: string;
+    isDelete?: number;
+    enable?: boolean;
+    free?: boolean;
+  };
+
+  type AiModelAddRequest = {
+    /** 模型名称 */
+    name?: string;
+    /** 模型类型:text,image,embedding,multimodal */
+    type?: string;
+    /** 配置 */
+    setting?: string;
+    /** 备注 */
+    remark?: string;
+    /** 平台：Ollama、OpenAI、Claude... */
+    platform?: string;
+    /** 最大输入token */
+    maxInputTokens?: number;
+    /** 最大输出token */
+    maxOutputTokens?: number;
+    /** 是否免费 */
+    isFree?: number;
+    /** 是否启用 */
+    isEnable?: number;
+  };
+
+  type AiModelQueryRequest = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    id?: number;
+    userId?: number;
+    name?: string;
+    type?: string;
+    platform?: string;
+    isFree?: number;
+    isEnable?: number;
+  };
+
   type AiModelUpdateRequest = {
     id?: number;
     name?: string;
@@ -95,6 +149,12 @@ declare namespace API {
   type BaseResponseLong = {
     code?: number;
     data?: number;
+    message?: string;
+  };
+
+  type BaseResponsePageAiModel = {
+    code?: number;
+    data?: PageAiModel;
     message?: string;
   };
 
@@ -408,6 +468,20 @@ declare namespace API {
   type OrderItem = {
     column?: string;
     asc?: boolean;
+  };
+
+  type PageAiModel = {
+    records?: AiModel[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: PageAiModel;
+    searchCount?: PageAiModel;
+    optimizeJoinOfCountSql?: boolean;
+    maxLimit?: number;
+    countId?: string;
+    pages?: number;
   };
 
   type PageChart = {
